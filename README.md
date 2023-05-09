@@ -2,7 +2,7 @@
 
 TheraSphere Logo
 
-TheraSphere is a fun and innovative app designed to revolutionize the way occupational therapists manage their practice. Our mission is to simplify your workload and maximize your efficiency by offering a seamless platform to manage your billing units and visit notes.
+TheraSphere is a fun and innovative app designed to revolutionize the way therapists manage their practice. Our mission is to simplify your workload and maximize your efficiency by offering a seamless platform to manage your billing units and visit notes.
 Features
 
     Easy management of billing units
@@ -64,6 +64,6 @@ License
 This project is licensed under the MIT License - see the LICENSE file for details.
 Acknowledgments
 
-    A huge thank you to all occupational therapists who inspired us to create TheraSphere
+    A huge thank you to all the therapists who inspired us to create TheraSphere
     We appreciate the community's feedback and support in improving the app
     Special thanks to our dedicated contributors and testers for their valuable input
