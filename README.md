@@ -2,7 +2,7 @@
 
 ![Logo](https://github.com/alinmakinbeats/TheraSphere/assets/69775078/fdedc7f1-b507-415d-9f6d-511f8ea3f091)
 
-TheraSphere is a fun and innovative app designed to revolutionize the way therapists manage their practice. Our mission is to simplify your workload and maximize your efficiency by offering a seamless platform to manage your billing units and visit notes.
+TheraSphere is a fun and innovative app designed to revolutionize the way therapists manage their practice. Our mission is to simplify your workload and maximize your efficiency by offering a seamless platform to manage your billing units and visit notes. 🕒
 
 ## Features
 
