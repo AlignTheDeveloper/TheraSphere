@@ -6,7 +6,7 @@ async function query(sql, params){
     if(connection === null){
         connection = await mysql.createConnection({
         host: '127.0.0.1',
-        user: " root",
+        user: "root",
         password: "",
         database: "tx2day",
         });
