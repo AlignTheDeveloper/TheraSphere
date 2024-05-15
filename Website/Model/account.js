@@ -1,6 +1,6 @@
 const connection = require("./connection");
 
-async function insertRow(parameters = {}) {
+async function insertRow(parameters) {
   const sqlStatement = `INSERT INTO accounts (user_name, password) VALUES (?, ?)`;
   const queryParameters = [parameters.user_name, parameters.password];
 
@@ -19,6 +19,10 @@ async function findUserByUserName(user_name) {
 
   try {
     const [results] = await connection.query(sqlStatement, queryParameters);
+    console.log('Query Results:', results); // Debugging line
+    if (!results) {
+      return null;
+    }
     return results.length > 0 ? results[0] : null;
   } catch (error) {
     console.error("Error in findUserByUserName:", error);

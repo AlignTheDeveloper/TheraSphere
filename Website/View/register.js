@@ -22,14 +22,10 @@ document.getElementById("submit").addEventListener("click", (event) => {
     body: JSON.stringify(formObject),
   })
     .then((response) => {
-      return new Promise((resolve) =>
-        response.json().then((json) =>
-          resolve({
-            status: response.status,
-            json,
-          })
-        )
-      );
+      return response.json().then((json) => ({
+        status: response.status,
+        json,
+      }));
     })
     // Logic to display errors and success on form
     .then(({ status, json }) => {
@@ -39,8 +35,7 @@ document.getElementById("submit").addEventListener("click", (event) => {
         htmlElement.innerHTML = "&nbsp;";
       }
       if (status === 400) {
-        errorBanner.innerText =
-          "Form has errors. Please correct them and resubmit.";
+        errorBanner.innerText = "Form has errors. Please correct them and resubmit.";
         errorBanner.hidden = false;
         for (let error of json.errors) {
           const errorId = error.path + "-error";
@@ -59,5 +54,4 @@ document.getElementById("submit").addEventListener("click", (event) => {
     .catch((error) => {
       console.error("Error:", error);
     });
-  return;
 });

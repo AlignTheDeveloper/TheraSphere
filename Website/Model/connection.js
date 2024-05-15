@@ -1,21 +1,22 @@
-const mysql = require("mysql2/promise");
+const mysql = require('mysql2/promise');
 
-let connection = null;
+const pool = mysql.createPool({
+    host: '127.0.0.1',
+    user: "root",
+    password: "",
+    database: "tx2day",
+});
 
-async function query(sql, params){
-    if(connection === null){
-        connection = await mysql.createConnection({
-        host: '127.0.0.1',
-        user: "root",
-        password: "",
-        database: "tx2day",
-        });
-    }
-    sql = mysql.format(sql, params);
-    const [results] = await connection.execute(sql, params);
-    return results;
+async function testConnection() {
+  try {
+    const connection = await pool.getConnection();
+    console.log('Database connection successful!');
+    connection.release();
+  } catch (error) {
+    console.error('Error connecting to the database:', error);
+  }
 }
 
-module.exports = {
-    query
-}
+testConnection();
+
+module.exports = pool;
