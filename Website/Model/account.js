@@ -19,7 +19,7 @@ async function findUserByUserName(user_name) {
 
   try {
     const [results] = await connection.query(sqlStatement, queryParameters);
-    console.log('Query Results:', results); // Debugging line
+    // console.log('Query Results:', results); // Debugging line
     if (!results) {
       return null;
     }

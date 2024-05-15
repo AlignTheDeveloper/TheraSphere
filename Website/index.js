@@ -13,6 +13,26 @@ app.use(express.static("View"));
 
 const port = process.env.PORT || 80;
 
+//endpoint to sign in to an account
+app.post('/account/login/', upload.none(),
+  async (request, response) => {
+    try {
+      const user = await account.findUserByUserName(request.body.user_name);
+      if (!user) {
+        return response.status(404).json({ message: 'User not found.' });
+      }
+      const match = await bcrypt.compare(request.body.password, user.password);
+      if (!match) {
+        return response.status(401).json({ message: 'Invalid password.' });
+      }
+      return response.json({ data: user });
+    } catch (error) {
+      console.error(error);
+      return response.status(500).json({ message: 'Something went wrong with the server.' });
+    }
+  }
+);
+//endpoint to create a new account
 app.post('/account/', upload.none(),
   check('user_name', 'Username must be at least 5 characters long and cannot contain spaces.').matches(/^[^\s]{5,}$/),
   check('password', 'Password must be at least 8 characters long.').isLength({ min: 8 }),
