@@ -3,17 +3,19 @@ const multer = require('multer');
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
 const account = require('./Model/account.js');
 const app = express();
 const upload = multer();
 
 app.use(cors());
-app.use(express.json()); // Add this to parse JSON bodies
+app.use(express.json());
+app.use(cookieParser());
 app.use(express.static("View"));
 
 const port = process.env.PORT || 80;
 
-//endpoint to sign in to an account
+// Endpoint to sign in to an account
 app.post('/account/login/', upload.none(),
   async (request, response) => {
     try {
@@ -25,14 +27,20 @@ app.post('/account/login/', upload.none(),
       if (!match) {
         return response.status(401).json({ message: 'Invalid password.' });
       }
-      return response.json({ data: user });
+      // Set HTTP-only cookie
+      response.cookie('user', JSON.stringify({ user_id: user.user_id, user_name: user.user_name }), {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production'
+      });
+      return response.json({ message: 'Login successful' });
     } catch (error) {
       console.error(error);
       return response.status(500).json({ message: 'Something went wrong with the server.' });
     }
   }
 );
-//endpoint to create a new account
+
+// Endpoint to create a new account
 app.post('/account/', upload.none(),
   check('user_name', 'Username must be at least 5 characters long and cannot contain spaces.').matches(/^[^\s]{5,}$/),
   check('password', 'Password must be at least 8 characters long.').isLength({ min: 8 }),
@@ -66,6 +74,17 @@ app.post('/account/', upload.none(),
     }
   }
 );
+
+// Endpoint to get user data from cookie
+app.get('/account/user', (req, res) => {
+  const userCookie = req.cookies.user;
+  if (userCookie) {
+    const user = JSON.parse(userCookie);
+    res.status(200).json(user);
+  } else {
+    res.status(401).json({ message: 'Not authenticated' });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
