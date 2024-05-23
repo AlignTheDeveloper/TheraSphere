@@ -5,6 +5,8 @@ const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const account = require('./Model/account.js');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const app = express();
 const upload = multer();
 
@@ -43,6 +45,7 @@ app.post('/account/login/', upload.none(),
 // Endpoint to create a new account
 app.post('/account/', upload.none(),
   check('user_name', 'Username must be at least 5 characters long and cannot contain spaces.').matches(/^[^\s]{5,}$/),
+  check('email', 'Must be a valid email.').isEmail(),
   check('password', 'Password must be at least 8 characters long.').isLength({ min: 8 }),
   check('password', 'Password must contain at least one Uppercase Letter.').matches(/[A-Z]/),
   check('password', 'Password must contain at least one Lowercase Letter.').matches(/[a-z]/),
@@ -66,7 +69,11 @@ app.post('/account/', upload.none(),
       }
 
       const hashedPassword = await bcrypt.hash(request.body.password, saltRounds);
-      const results = await account.insertRow({ user_name: request.body.user_name, password: hashedPassword });
+      const results = await account.insertRow({ 
+        user_name: request.body.user_name, 
+        email: request.body.email,
+        password: hashedPassword 
+      });
       return response.json({ data: results });
     } catch (error) {
       console.error(error);
@@ -85,6 +92,71 @@ app.get('/account/user', (req, res) => {
     res.status(401).json({ message: 'Not authenticated' });
   }
 });
+
+app.post('/account/forgot-password', async (req, res) => {
+  try {
+    const { user_name } = req.body;
+    const user = await account.findUserByUserName(user_name) || await account.findUserByEmail(user_name);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const token = crypto.randomBytes(20).toString('hex');
+    const expires = Date.now() + 3600000; // 1 hour
+
+    await account.setResetToken(user.id, token, expires);
+
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      to: user.email,
+      from: process.env.EMAIL,
+      subject: 'Password Reset',
+      text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
+        Please click on the following link, or paste this into your browser to complete the process:\n\n
+        http://${req.headers.host}/reset/${token}\n\n
+        If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+    };
+
+    transporter.sendMail(mailOptions, (error, response) => {
+      if (error) {
+        console.error('There was an error: ', error);
+        return res.status(500).json({ message: 'Error sending the email.' });
+      } else {
+        res.status(200).json({ message: 'An e-mail has been sent to ' + user.email + ' with further instructions.' });
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Something went wrong with the server.' });
+  }
+});
+
+app.post('/account/reset-password', async (req, res) => {
+  try {
+    const { token, password } = req.body;
+    const user = await account.findUserByToken(token);
+    if (!user || user.reset_token_expires < Date.now()) {
+      return res.status(400).json({ message: 'Password reset token is invalid or has expired.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await account.updatePassword(user.id, hashedPassword);
+    await account.clearResetToken(user.id);
+
+    res.status(200).json({ message: 'Password has been reset successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Something went wrong with the server.' });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

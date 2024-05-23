@@ -1,0 +1,157 @@
+/* #152828 primary*/
+/* #2A5050 secondary */
+/* #7F9494 text */
+/* #FFDCC9 accent */
+
+@keyframes backgroundScroll {
+    from { background-position: 0 0; }
+    to { background-position: 0 100%; }
+}
+
+body {
+    background-image: url("../images/website_background.png");
+    background-color: #152828;
+    background-repeat: repeat-y;
+    background-size: cover;
+    animation: backgroundScroll 30s linear infinite;
+    font-family: 'Roboto', sans-serif;
+    border-radius: 15px;
+}
+.row {
+    padding: 10px;
+}
+h1 {
+    color: #FFDCC9;
+    background: linear-gradient(90deg, #152828, #2A5050);
+    text-align: center;
+    border-radius: 20px;
+}
+h3, h5 {
+    color:#152828;
+}
+p {
+    color: #152828;
+}
+a {
+    color: #152828;
+}
+a:hover {
+    color: #FFFFFF;
+}
+a:visited {
+    color: #FFDCC9;
+}
+hr {
+    border: 5px solid #152828;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    color: #7F9494;
+    font-family: monospace;
+    text-align: left;
+    border-radius: 10px;
+}
+.table thead th {
+    background-color: #152828;
+    color: #FFDCC9;
+    font-size: larger;
+}
+.table tbody tr:nth-child(even) td{
+    background-color: #FFFFFF;
+    color: #152828;
+}
+.table tbody tr:nth-child(odd) td{
+    background-color: #7F9494;
+    color:#152828;
+}
+.table tbody tr:nth-child(odd) td button{
+    background-color: #FFFFFF;
+    color:#152828;
+}
+.table tbody tr:nth-child(odd) td button:hover{
+    background-color: #FFDCC9;
+    color:#152828;
+}
+input {
+    background-color: #152828;
+    color:#FFFFFF;
+    border: 5px solid #152828;
+    border-radius: 5px;
+}
+select {
+    background-color: #152828;
+    color:#FFFFFF;
+    border: 5px solid #152828;
+    border-radius: 5px;
+}
+button {
+    background-color: #7F9494;
+    color:#FFFFFF;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: 5px solid #152828;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.399);
+}
+button:hover {
+    background-color: #FFDCC9;
+    color:#152828;
+}
+#valid-form {
+    background-color: #FFDCC9;
+    color:#152828;
+    border: 5px solid #152828;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+}
+#add_find {
+    background-color: #15282863;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 20px 0;
+}
+#add_find h3{
+    color:#FFFFFF;
+}
+input:focus, select:focus, button:focus {
+    outline: none;
+    box-shadow: 0 0 10px #FFDCC9;
+}
+.table thead th:hover {
+    background-color: #7F9494;
+    cursor: pointer;
+}
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    background: #2A5050;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #FFDCC9;
+    border-radius: 6px;
+    border: 3px solid #152828;
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+button:hover {
+    animation: pulse 1s infinite;
+}
+a {
+    transition: color 0.3s ease;
+}
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+input[type="text"], input[type="date"], select {
+    width: 25%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
