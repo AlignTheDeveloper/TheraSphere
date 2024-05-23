@@ -96,8 +96,6 @@ async function clearResetToken(id) {
   }
 }
 
-
-
 module.exports = {
   insertRow,
   findUserByUserName,
