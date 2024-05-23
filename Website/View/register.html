@@ -8,8 +8,8 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
-            <!-- <link rel="stylesheet" href="Assets/css/ADD STYLE SHEET HERE" /> -->
-            <title>Create an account</title>
+        <link rel="stylesheet" href="Assets/css/styles.css" />
+        <title>Create an account</title>
     </head>
 <body>
     <div id="invalid-form" class="alert alert-danger">&nbsp;</div>
@@ -17,57 +17,91 @@
 
     <div class="container-fluid" id="headerStyle">
         <div class="row">
-            <div class="col-12">
+            <div class="col-2"></div>
+            <div class="col-8">
                 <h1>Create an account!</h1>
-                <h3>Please fill in the form below to make an account.</h3>
+                <h3>Please fill in the form below to register for an account.</h3>
             </div>
+            <div class="col-2"></div>
         </div>
     </div>
     <form id="register-form">
         <div class="container-fluid" id="registrationStyle">
             <div class="row">
-                <div class="col-4">
-                </div>
-                <div class="col-2">
+                <div class="col-3"></div>
+                <div class="col-3">
                     <label for="user_name">User Name:</label><br />
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <input type="text" id="user_name" name="user_name" required><br />
                 </div>
-                <div class="col-2">
+                <div class="col-3"></div>
             </div>
             
             <div class="row mb-3">
-                <div id="user_name-error" class="col-12 text-danger">&nbsp;</div>
+                <div class="col-3"></div>
+                <div id="user_name-error" class="col-6 text-danger">&nbsp;</div>
+                <div class="col-3"></div>
             </div>
 
             <div class="row">
-                <div class="col-4">
+                <div class="col-3"></div>
+                <div class="col-3">
+                    <label for="email">Email:</label><br />
                 </div>
-                <div class="col-2">
+                <div class="col-3">
+                    <input type="email" id="email" name="email" required><br />
+                </div>
+                <div class="col-3"></div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-3"></div>
+                <div id="email-error" class="col-6 text-danger">&nbsp;</div>
+                <div class="col-3"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-3">
                     <label for="password">Password:</label><br />
                 </div>
-                <div class="col-4">
-                    <input type="text" id="password" name="password" required><br />
+                <div class="col-3">
+                    <input type="password" id="password" name="password" required><br />
                 </div>
-                <div class="col-2">
+                <div class="col-3"></div>
             </div>
 
             <div class="row mb-3">
-                <div id="password-error" class="col-12 text-danger">&nbsp;</div>
+                <div class="col-3"></div>
+                <div id="password-error" class="col-6 text-danger">&nbsp;</div>
+                <div class="col-3"></div>
             </div>
             
             <div class="row">
-                <div class="col-9">
+                <div class="col-3"></div>
+                <div class="col-3">
                 </div>
-                <div class="col-1" id="submitStyle">
+                <div class="col-3" id="submitStyle">
                     <input type="submit" value="submit" id="submit"/>
                 </div>
-                <div class="col-2">
-                </div>
+                <div class="col-3"></div>
             </div>
         </div>
     </form>
+
+    <div class="container-fluid" id="registerPromptStyle">
+        <div class="row">
+            <div class="col-3">
+            </div>
+            <div class="col-6">
+                <h3>Already have an account? <a class="btn btn-secondary btn-lg" href="login.html" role="button">Login</a> here!</h3>
+            </div>
+            <div class="col-3">
+            </div>
+        </div>
+    </div>
+
     <script src="register.js"></script>
 </body>
 </html>
