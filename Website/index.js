@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
@@ -16,6 +18,14 @@ app.use(cookieParser());
 app.use(express.static("View"));
 
 const port = process.env.PORT || 80;
+
+// Ensure you have these environment variables set
+const email = process.env.EMAIL; // Your email address
+const emailPassword = process.env.EMAIL_PASSWORD; // Your email password
+
+if (!email || !emailPassword) {
+  throw new Error('Missing email credentials in environment variables.');
+}
 
 // Endpoint to sign in to an account
 app.post('/account/login/', upload.none(),
