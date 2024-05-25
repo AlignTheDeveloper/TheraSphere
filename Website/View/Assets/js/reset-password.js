@@ -1,3 +1,8 @@
+document.addEventListener('DOMContentLoaded', function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+  document.getElementById('token').value = token;
+
 document.getElementById("reset-password-form").addEventListener("submit", function(event) {
     event.preventDefault();
     const form = event.target;
@@ -22,3 +27,4 @@ document.getElementById("reset-password-form").addEventListener("submit", functi
       console.error("Error:", error);
     });
   });
+});
