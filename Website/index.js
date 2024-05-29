@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const account = require('./Model/account.js');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 const app = express();
 const upload = multer();
 
@@ -19,13 +20,8 @@ app.use(express.static("View"));
 
 const port = process.env.PORT || 80;
 
-// Ensure you have these environment variables set
-const email = process.env.EMAIL; // Your email address
-const emailPassword = process.env.EMAIL_PASSWORD; // Your email password
-
-if (!email || !emailPassword) {
-  throw new Error('Missing email credentials in environment variables.');
-}
+// Configure SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Endpoint to sign in to an account
 app.post('/account/login/', upload.none(),
@@ -116,32 +112,23 @@ app.post('/account/forgot-password', async (req, res) => {
 
     await account.setResetToken(user.id, token, expires);
 
-    const transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    });
-
-    const mailOptions = {
+    const msg = {
       to: user.email,
       from: process.env.EMAIL,
       subject: 'Password Reset',
       text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
         Please click on the following link, or paste this into your browser to complete the process:\n\n
-        http://${req.headers.host}/reset/${token}\n\n
+        http://${req.headers.host}/reset-password.html?token=${token}\n\n
         If you did not request this, please ignore this email and your password will remain unchanged.\n`,
     };
-
-    transporter.sendMail(mailOptions, (error, response) => {
-      if (error) {
-        console.error('There was an error: ', error);
-        return res.status(500).json({ message: 'Error sending the email.' });
-      } else {
+    sgMail.send(msg)
+      .then(() => {
         res.status(200).json({ message: 'An e-mail has been sent to ' + user.email + ' with further instructions.' });
-      }
-    });
+      })
+      .catch(error => {
+        console.error('There was an error: ', error);
+        res.status(500).json({ message: 'Error sending the email.' });
+      });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Something went wrong with the server.' });
@@ -166,7 +153,6 @@ app.post('/account/reset-password', async (req, res) => {
     res.status(500).json({ message: 'Something went wrong with the server.' });
   }
 });
-
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
