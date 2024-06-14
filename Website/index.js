@@ -154,6 +154,45 @@ app.post('/account/reset-password', async (req, res) => {
   }
 });
 
+// Endpoint to get therapist data
+app.get('/therapist/:account_id', async (req, res) => {
+  try {
+    const therapist = await therapist.findTherapistByAccountId(req.params.account_id);
+    if (therapist) {
+      res.status(200).json(therapist);
+    } else {
+      res.status(404).json({ message: 'Therapist not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Something went wrong with the server.' });
+  }
+});
+
+// Endpoint to insert therapist data
+app.post('/therapist', upload.none,
+  check('first_name', 'First name is required.').notEmpty(),
+  check('last_name', 'Last name is required.').notEmpty(),
+  async (req, res) => {
+  try {
+    const userCookie = req.cookies.user;
+    if (!userCookie) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+    const user = JSON.parse(userCookie);
+    const therapistData = {
+      account_id: user.user_id,
+      first_name: req.body.first_name,
+      last_name: req.body.last_name
+    };
+    const result = await therapist.insertTherapist(therapistData);
+    res.status(200).json({ message: 'Therapist profile created successfully', success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Something went wrong with the server.' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

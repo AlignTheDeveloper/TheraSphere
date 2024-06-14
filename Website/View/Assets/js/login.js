@@ -52,7 +52,6 @@ document.getElementById("submit").addEventListener("click", (event) => {
       }
       else if (status === 200) {
         alert("Login successful!");
-        // localStorage.setItem("user", JSON.stringify(json.data));
         window.location.href = "/home.html";
       } 
       else {
