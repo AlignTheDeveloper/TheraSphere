@@ -7,6 +7,7 @@ const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const account = require('./Model/account.js');
+const therapist = require('./Model/therapist.js');  // Correctly import the therapist module
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const sgMail = require('@sendgrid/mail');
@@ -23,11 +24,12 @@ const port = process.env.PORT || 80;
 // Configure SendGrid
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-// Endpoint to sign in to an account
+// Endpoint to sign in to an account and set a cookie
 app.post('/account/login/', upload.none(),
   async (request, response) => {
     try {
       const user = await account.findUserByUserName(request.body.user_name);
+      console.log('Fetched User:', user);  // Log the user object
       if (!user) {
         return response.status(404).json({ message: 'User not found.' });
       }
@@ -36,7 +38,7 @@ app.post('/account/login/', upload.none(),
         return response.status(401).json({ message: 'Invalid password.' });
       }
       // Set HTTP-only cookie
-      response.cookie('user', JSON.stringify({ user_id: user.user_id, user_name: user.user_name }), {
+      response.cookie('user', JSON.stringify({ user_id: user.id, user_name: user.user_name }), {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production'
       });
@@ -99,6 +101,7 @@ app.get('/account/user', (req, res) => {
   }
 });
 
+// endpoint to send an email to reset password
 app.post('/account/forgot-password', async (req, res) => {
   try {
     const { user_name } = req.body;
@@ -135,6 +138,7 @@ app.post('/account/forgot-password', async (req, res) => {
   }
 });
 
+// Endpoint to reset password
 app.post('/account/reset-password', async (req, res) => {
   try {
     const { token, password } = req.body;
@@ -157,9 +161,9 @@ app.post('/account/reset-password', async (req, res) => {
 // Endpoint to get therapist data
 app.get('/therapist/:account_id', async (req, res) => {
   try {
-    const therapist = await therapist.findTherapistByAccountId(req.params.account_id);
-    if (therapist) {
-      res.status(200).json(therapist);
+    const therapistData = await therapist.findTherapistByAccountId(req.params.account_id);
+    if (therapistData) {
+      res.status(200).json(therapistData);
     } else {
       res.status(404).json({ message: 'Therapist not found' });
     }
@@ -170,16 +174,22 @@ app.get('/therapist/:account_id', async (req, res) => {
 });
 
 // Endpoint to insert therapist data
-app.post('/therapist', upload.none,
+app.post('/therapist', upload.none(),
   check('first_name', 'First name is required.').notEmpty(),
   check('last_name', 'Last name is required.').notEmpty(),
   async (req, res) => {
   try {
     const userCookie = req.cookies.user;
+    console.log('User Cookie:', userCookie); // Log the cookie for debugging
     if (!userCookie) {
       return res.status(401).json({ message: 'Not authenticated' });
     }
     const user = JSON.parse(userCookie);
+    console.log('Parsed User:', user); // Log the parsed user object for debugging
+    if (!user || !user.user_id) {
+      return res.status(400).json({ message: 'Invalid user data in cookie' });
+    }
+
     const therapistData = {
       account_id: user.user_id,
       first_name: req.body.first_name,
@@ -193,6 +203,7 @@ app.post('/therapist', upload.none,
   }
 });
 
+// endpoint to tell console server is running
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
