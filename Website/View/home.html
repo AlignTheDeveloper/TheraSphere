@@ -8,37 +8,35 @@
     <link rel="stylesheet" href="Assets/css/styles.css" />
     <title>Home</title>
 </head>
-<body>
-    <div id="invalid-form" class="alert alert-danger" hidden>&nbsp;</div>
-    <div id="valid-form" hidden>&nbsp;</div> 
-
+<body> 
     <div class="container-fluid" id="headerStyle">
         <div class="row">
             <div class="col-12">
                 <h1>HOME PAGE</h1>
-                <h3>Welcome, <span id="username"></span>!</h3>
+                <h2>Welcome, <span id="username"></span>!</h2>
             </div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch("/account/user")
-                .then(response => {
-                    if (response.status === 200) {
-                        return response.json();
-                    } else {
-                        window.location.href = "/login.html"; // Redirect to login if user is not authenticated
-                    }
-                })
-                .then(data => {
-                    document.getElementById("username").innerText = data.user_name;
-                })
-                .catch(error => {
-                    console.error("Error fetching user data:", error);
-                    window.location.href = "/login.html"; // Redirect to login on error
-                });
-        });
-    </script>
+    <div class="container-fluid" id="therapist_not_verified" style="display: none;">
+        <div class="row">
+            <div class="col-12">
+                <h2>Wait a second!</h2>
+                <h5>It looks like you haven't been verified as a therapist yet.</h5> 
+                <h5>Please click the button below to start the verification process.</h5>
+                <h5><a class="btn btn-secondary btn-lg" href="edit-profile.html" role="button">Verify</a></h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" id="home_screen" style="display: none;">
+        <div class="row">
+            <div class="col-12">
+                <h2>What school are you working at?</h2>
+            </div>
+        </div>
+    </div>
+
+    <script src="Assets/js/home.js"></script>
 </body>
 </html>
